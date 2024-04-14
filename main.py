@@ -1,3 +1,4 @@
+from cgitb import text
 from tkinter import *
 from tkinter import simpledialog
 from tkinter.constants import END
@@ -28,21 +29,23 @@ def find(event=None):
 
 def save_file():
     global text_widget
-    name = simpledialog.askstring("Сохранить", "Введите имя файла:")
-    if name:
+    file_path = filedialog.asksaveasfilename(filetypes=[("Текстовые файлы", "*.txt"), ("Все файлы", "*.*")])
+    if file_path:
         content = text_widget.get("1.0", END)
-        with open(name, "w") as f:
+        with open(file_path, "w") as f:
             f.write(content)
+    # if name:
+    #     content = text_widget.get("1.0", END)
+    #     with open(name, "w") as f:
+    #         f.write(content)
 
 def main():
     global text_widget
     root = Tk()
     root.title("Простой блокнот")
     root.geometry('400x250')
-
     text_widget = ScrolledText(root)
     text_widget.pack(fill=BOTH, expand=True, padx=10, pady=10)
-
     menu = Menu(root)
     file_menu = Menu(menu)
     file_menu.add_command(label='Сохранить', command=save_file)
@@ -50,10 +53,8 @@ def main():
     file_menu.add_command(label="Открыть файл", command=open_file)
     menu.add_cascade(label='Файл', menu=file_menu)
     root.config(menu=menu)
-
     root.bind("<Control-s>", lambda event: save_file())
     root.bind("<Control-f>", find)
-
     root.mainloop()
 
 if __name__ == '__main__':
